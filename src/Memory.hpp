@@ -33,7 +33,8 @@ private:
 
 public:
 	Memory();
-
+    ~Memory();
+    
 	void AddRange(MemoryRange range);
 
 	uint8 Read(uint32 address);

@@ -18,6 +18,15 @@ Memory::Memory()
 {
 }
 
+Memory::~Memory()
+{
+    for(const auto& range : _memory)
+    {
+        if(range.ownsBuffer)
+            delete [] range.buffer;
+    }
+}
+
 void Memory::AddRange(MemoryRange range)
 {
 	if (range.ownsBuffer)
