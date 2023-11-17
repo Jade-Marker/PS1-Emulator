@@ -7,9 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A894DA0F2B06A462006FD329 /* Maths.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A894DA0D2B06A462006FD329 /* Maths.cpp */; };
 		A8E806562B026CC500131233 /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8E806502B026CC500131233 /* Memory.cpp */; };
 		A8E806572B026CC500131233 /* Parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8E806542B026CC500131233 /* Parser.cpp */; };
 		A8E806582B026CC500131233 /* Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8E806552B026CC500131233 /* Main.cpp */; };
+		A8E8065B2B0279AE00131233 /* ComponentManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8E806592B0279AE00131233 /* ComponentManager.cpp */; };
+		A8E8065E2B027B5400131233 /* Component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8E8065C2B027B5400131233 /* Component.cpp */; };
+		A8E806612B027E0600131233 /* R3000A.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8E8065F2B027E0600131233 /* R3000A.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +29,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A894DA0D2B06A462006FD329 /* Maths.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Maths.cpp; sourceTree = "<group>"; };
+		A894DA0E2B06A462006FD329 /* Maths.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Maths.hpp; sourceTree = "<group>"; };
 		A8E806452B026C8200131233 /* MipsParser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MipsParser; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8E806502B026CC500131233 /* Memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Memory.cpp; sourceTree = "<group>"; };
 		A8E806512B026CC500131233 /* Parser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Parser.hpp; sourceTree = "<group>"; };
@@ -32,6 +38,12 @@
 		A8E806532B026CC500131233 /* Types.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Types.hpp; sourceTree = "<group>"; };
 		A8E806542B026CC500131233 /* Parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Parser.cpp; sourceTree = "<group>"; };
 		A8E806552B026CC500131233 /* Main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Main.cpp; sourceTree = "<group>"; };
+		A8E806592B0279AE00131233 /* ComponentManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ComponentManager.cpp; sourceTree = "<group>"; };
+		A8E8065A2B0279AE00131233 /* ComponentManager.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ComponentManager.hpp; sourceTree = "<group>"; };
+		A8E8065C2B027B5400131233 /* Component.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Component.cpp; sourceTree = "<group>"; };
+		A8E8065D2B027B5400131233 /* Component.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Component.hpp; sourceTree = "<group>"; };
+		A8E8065F2B027E0600131233 /* R3000A.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = R3000A.cpp; sourceTree = "<group>"; };
+		A8E806602B027E0600131233 /* R3000A.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = R3000A.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,12 +76,20 @@
 		A8E8064F2B026CC500131233 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				A8E8065F2B027E0600131233 /* R3000A.cpp */,
+				A8E806602B027E0600131233 /* R3000A.hpp */,
 				A8E806502B026CC500131233 /* Memory.cpp */,
 				A8E806512B026CC500131233 /* Parser.hpp */,
 				A8E806522B026CC500131233 /* Memory.hpp */,
+				A8E806592B0279AE00131233 /* ComponentManager.cpp */,
+				A8E8065A2B0279AE00131233 /* ComponentManager.hpp */,
 				A8E806532B026CC500131233 /* Types.hpp */,
 				A8E806542B026CC500131233 /* Parser.cpp */,
 				A8E806552B026CC500131233 /* Main.cpp */,
+				A8E8065C2B027B5400131233 /* Component.cpp */,
+				A8E8065D2B027B5400131233 /* Component.hpp */,
+				A894DA0D2B06A462006FD329 /* Maths.cpp */,
+				A894DA0E2B06A462006FD329 /* Maths.hpp */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -134,6 +154,10 @@
 				A8E806582B026CC500131233 /* Main.cpp in Sources */,
 				A8E806572B026CC500131233 /* Parser.cpp in Sources */,
 				A8E806562B026CC500131233 /* Memory.cpp in Sources */,
+				A8E806612B027E0600131233 /* R3000A.cpp in Sources */,
+				A8E8065B2B0279AE00131233 /* ComponentManager.cpp in Sources */,
+				A894DA0F2B06A462006FD329 /* Maths.cpp in Sources */,
+				A8E8065E2B027B5400131233 /* Component.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

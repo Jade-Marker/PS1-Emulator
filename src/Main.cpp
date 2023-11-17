@@ -4,6 +4,8 @@
 #include <vector>
 #include "Memory.hpp"
 #include "Parser.hpp"
+#include "ComponentManager.hpp"
+#include "R3000A.hpp"
 
 int main()
 {
@@ -28,6 +30,15 @@ int main()
 
 	Parser parser = Parser(&memory, programCounter);
     parser.Parse();
+    
+    ComponentManager componentManager;
+    componentManager.AddComponent(new R3000A());
+    componentManager.AddComponent(new Component(3));
+    componentManager.AddComponent(new Component(4));
+    componentManager.AddComponent(new Component(6));
+
+    for(int i = 0; i < 24; i++)
+        componentManager.Tick();
     
     delete[] buffer;
 
