@@ -1,6 +1,6 @@
 #include "Maths.hpp"
 
-bool ElementsAreEqual(const std::vector<uint32>& vec)
+bool ElementsAreEqual(const std::vector<uint64>& vec)
 {
     for(int i = 1; i < vec.size(); i++)
     {
@@ -11,7 +11,7 @@ bool ElementsAreEqual(const std::vector<uint32>& vec)
     return true;
 }
 
-int LowestIndex(const std::vector<uint32>& vec)
+int LowestIndex(const std::vector<uint64>& vec)
 {
     int lowestIndex = 0;
     
@@ -25,14 +25,14 @@ int LowestIndex(const std::vector<uint32>& vec)
 }
 
 
-uint32 LeastCommonMultiple(const std::vector<uint32>& vec)
+uint64 LeastCommonMultiple(const std::vector<uint64>& vec)
 {
     if(vec.size() == 1)
         return vec[0];
     else if (vec.size() == 0)
         return 0;
     
-    std::vector<uint32> temp = std::vector<uint32>(vec);
+    std::vector<uint64> temp = std::vector<uint64>(vec);
     
     while(!ElementsAreEqual(temp))
     {

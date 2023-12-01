@@ -7,9 +7,9 @@ class ComponentManager
 {
 private:
     std::vector<Component*> _components;
-    std::vector<uint32> _ticksRequired;
-    std::vector<uint32> _tickCount;
-    uint32 _tickFrequency;
+    std::vector<uint64> _ticksRequired;
+    std::vector<uint64> _tickCount;
+    uint64 _tickFrequency;
     
     void CalculateTickFrequency();
     

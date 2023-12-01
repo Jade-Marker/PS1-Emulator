@@ -5,12 +5,12 @@
 class Component
 {
 private:
-    uint32 _frequency;
+    uint64 _frequency;
 
 public:
-    Component(uint32 frequency);
+    Component(uint64 frequency);
     
-    uint32 GetFrequency();
+    uint64 GetFrequency();
     
     virtual void Cycle();
 };

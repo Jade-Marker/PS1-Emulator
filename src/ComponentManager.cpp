@@ -5,7 +5,7 @@ void ComponentManager::CalculateTickFrequency()
 {
     //we want to find the rate at which we can tick and not miss any updates for anything
     //so given a set of frequencies, it should be the lowest common multiple
-    std::vector<uint32> frequencies;
+    std::vector<uint64> frequencies;
     frequencies.resize(_components.size());
     
     for(int i = 0; i < _components.size(); i++)

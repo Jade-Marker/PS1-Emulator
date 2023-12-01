@@ -3,9 +3,16 @@
 #include <fstream>
 #include <vector>
 #include "Memory.hpp"
-#include "Parser.hpp"
 #include "ComponentManager.hpp"
 #include "R3000A.hpp"
+#include "Constants.hpp"
+
+//todo
+//Figure out subset of instructions to complete
+//Get componentmanager running at given tick rate per second
+//Get CPU running subset using switch/case method
+//Get CPU running subset using lookup method
+//Compare switch/case and lookup methods
 
 int main()
 {
@@ -27,17 +34,14 @@ int main()
 	memory.Write(0x80010000, size - 2048, buffer + 2048);
 
 	uint32 programCounter = *(uint32*)(buffer + 8 + 16);
-
-	Parser parser = Parser(&memory, programCounter);
-    parser.Parse();
     
     ComponentManager componentManager;
-    componentManager.AddComponent(new R3000A());
-    componentManager.AddComponent(new Component(3));
-    componentManager.AddComponent(new Component(4));
-    componentManager.AddComponent(new Component(6));
+    componentManager.AddComponent(new R3000A(&memory, programCounter));
+    componentManager.AddComponent(new Component(cR3000AClockSpeedHz));
+    componentManager.AddComponent(new Component(cR3000AClockSpeedHz/2));
+    componentManager.AddComponent(new Component(cR3000AClockSpeedHz*2));
 
-    for(int i = 0; i < 24; i++)
+    for(int i = 0; i < 2*2; i++)
         componentManager.Tick();
     
     delete[] buffer;

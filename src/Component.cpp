@@ -1,12 +1,12 @@
 #include "Component.hpp"
 
-Component::Component(uint32 frequency):
+Component::Component(uint64 frequency):
 _frequency(frequency)
 {
     
 }
 
-uint32 Component::GetFrequency()
+uint64 Component::GetFrequency()
 {
     return _frequency;
 }

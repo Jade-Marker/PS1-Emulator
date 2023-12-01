@@ -1,8 +1,7 @@
 #pragma once
 #include "Types.hpp"
-#include "Memory.hpp"
 
-struct RTypeInstruction 
+struct RTypeInstruction
 {
 	uint32 funct : 6;
 	uint32 shamt : 5;
@@ -33,6 +32,20 @@ enum class InstructionType
 	JType
 };
 
+enum class MipsInstruction
+{
+	INSTRUCTION_SPECIAL = 0,
+	INSTRUCTION_BCOND,
+	INSTRUCTION_J,
+	INSTRUCTION_JAL,
+	INSTRUCTION_BEQ,
+	INSTRUCTION_BNE,
+	INSTRUCTION_BLEZ,
+	INSTRUCTION_BGTZ,
+
+
+};
+
 struct Instruction
 {
 	union
@@ -47,16 +60,3 @@ struct Instruction
 
 	Instruction(uint32 integer);
 };
-
-class Parser
-{
-private:
-	Memory* _pMemory;
-	uint32 _programCounter;
-
-public:
-	Parser(Memory* pMemory, uint32 programCounter);
-
-	void Parse();
-};
-

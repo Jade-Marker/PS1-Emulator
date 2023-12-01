@@ -2,4 +2,4 @@
 #include <vector>
 #include "Types.hpp"
 
-uint32 LeastCommonMultiple(const std::vector<uint32>& vec);
+uint64 LeastCommonMultiple(const std::vector<uint64>& vec);
