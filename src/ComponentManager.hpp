@@ -12,11 +12,10 @@ private:
     uint64 _tickFrequency;
     
     void CalculateTickFrequency();
-    
-public:
-    
     void Tick();
     
+public:
     void AddComponent(Component* component);
+    void RunNTicks(int numTicks);
 };
 

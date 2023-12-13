@@ -7,20 +7,31 @@
 
 R3000A::R3000A(Memory* pMemory, uint32 programCounter):
     Component(cR3000AClockSpeedHz), _pMemory(pMemory), _programCounter(programCounter),
-    _mulHigh(0), _mulLow(0), _registers()
+    _mulHigh(0), _mulLow(0), _registers(), _numCyclesTillFree(0)
 {
     
 }
 
 void R3000A::Cycle()
 {
-    std::cout << "CPU cycle" << std::endl;
-    Instruction instruction = Instruction(_pMemory->ReadInt(_programCounter));
+    if (_numCyclesTillFree == 0)
+    {
+        std::cout << "CPU cycle" << std::endl;
+        Instruction instruction = Instruction::GetInstruction(_pMemory->ReadInt(_programCounter));
 
-    std::cout << "Instruction: " << std::hex << instruction.asInteger << '\n';
+        std::cout << "Instruction: " << std::hex << instruction.asInteger << '\n';
 
-    _programCounter += 4;
-    OutputCPUState();
+        switch (instruction.asIType.op)
+        {
+            case MipsInstruction::INSTRUCTION_LUI:
+                break;
+        }
+
+        _programCounter += 4;
+        OutputCPUState();
+    }
+    else
+        _numCyclesTillFree--;
 }
 
 void R3000A::OutputCPUState()

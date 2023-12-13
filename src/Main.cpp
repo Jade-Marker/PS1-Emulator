@@ -37,13 +37,9 @@ int main()
     
     ComponentManager componentManager;
     componentManager.AddComponent(new R3000A(&memory, programCounter));
-    componentManager.AddComponent(new Component(cR3000AClockSpeedHz));
-    componentManager.AddComponent(new Component(cR3000AClockSpeedHz/2));
-    componentManager.AddComponent(new Component(cR3000AClockSpeedHz*2));
 
-    for(int i = 0; i < 2*2; i++)
-        componentManager.Tick();
-    
+	componentManager.RunNTicks(1);
+
     delete[] buffer;
 
 	return 0;

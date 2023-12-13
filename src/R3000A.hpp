@@ -9,9 +9,9 @@ class R3000A : public Component
 {
 private:
     Memory* _pMemory;
+    uint32 _numCyclesTillFree;
 
     uint32 _programCounter;
-
     union
     {
         uint64 _mulHigh; // Multiplication 64 bit high result or division remainder

@@ -43,3 +43,9 @@ void ComponentManager::AddComponent(Component *component)
     _components.push_back(component);
     CalculateTickFrequency();
 }
+
+void ComponentManager::RunNTicks(int numTicks)
+{
+    for (int i = 0; i < numTicks; i++)
+        Tick();
+}
