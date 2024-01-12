@@ -82,3 +82,12 @@ void Memory::Write(uint32 address, uint32 length, uint8* data)
 		data++;
 	}
 }
+
+void Memory::WriteInt(uint32 address, uint32 data)
+{
+	MemoryRange range;
+	GetRange(address, range);
+
+	uint32* dst = (uint32*) & range.buffer[address - range.startingAddress];
+	*dst = data;
+}

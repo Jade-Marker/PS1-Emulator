@@ -8,15 +8,15 @@
 #include "Constants.hpp"
 
 //todo
-//Figure out subset of instructions to complete
+//Get OpenBios compiled and running
+//Update instructions and cpu to properly match pipelining
 //Get componentmanager running at given tick rate per second
-//Get CPU running subset using switch/case method
 //Get CPU running subset using lookup method
 //Compare switch/case and lookup methods
 
 int main()
 {
-	std::ifstream file = std::ifstream("Executables/Bloom.ps-exe", std::ios::binary | std::ios::in | std::ios::ate);
+	std::ifstream file = std::ifstream("Executables/BasicAsm.ps-exe", std::ios::binary | std::ios::in | std::ios::ate);
 	if (!file.is_open())
 		throw std::runtime_error("could not open file");
 	int size = file.tellg();
@@ -38,7 +38,7 @@ int main()
     ComponentManager componentManager;
     componentManager.AddComponent(new R3000A(&memory, programCounter));
 
-	componentManager.RunNTicks(1);
+	componentManager.RunNTicks(5);
 
     delete[] buffer;
 

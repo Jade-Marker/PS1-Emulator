@@ -8,7 +8,16 @@ enum class InstructionType
 	JType
 };
 
-enum class MipsInstruction
+enum class PipelineParts
+{
+    INSTRUCT_FETCH = 1,
+    REGISTER_READ = 2,
+    EXECUTE = 4,
+    MEMORY_ACCESS = 8,
+    REGISTER_WRITE = 16,
+};
+
+enum class MipsInstruction : uint32
 {
 	INSTRUCTION_SPECIAL = 0,
 	INSTRUCTION_BCOND,
@@ -92,9 +101,10 @@ struct Instruction
 	};
 
 	InstructionType instructionType;
+    PipelineParts pipelineUsed;
 
 	Instruction();
-	Instruction(uint32 asInteger, InstructionType instructionType);
+	Instruction(uint32 asInteger, InstructionType instructionType, PipelineParts pipelineUsed);
 
 	static Instruction GetInstruction(uint32 asInteger);
 };

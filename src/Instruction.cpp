@@ -4,10 +4,17 @@
 
 std::map<MipsInstruction, Instruction> instructionsMap
 {
-	{MipsInstruction::INSTRUCTION_SPECIAL, Instruction((int)MipsInstruction::INSTRUCTION_SPECIAL, InstructionType::RType)},
+	//{MipsInstruction::INSTRUCTION_SPECIAL, Instruction((int)MipsInstruction::INSTRUCTION_SPECIAL, InstructionType::RType, PipelineParts::INSTRUCT_FETCH)},
 
+	{MipsInstruction::INSTRUCTION_JAL, Instruction((int)MipsInstruction::INSTRUCTION_JAL, InstructionType::JType, PipelineParts::INSTRUCT_FETCH)},
 
-	{MipsInstruction::INSTRUCTION_LUI, Instruction((int)MipsInstruction::INSTRUCTION_LUI, InstructionType::IType)},
+	{MipsInstruction::INSTRUCTION_ADDI, Instruction((int)MipsInstruction::INSTRUCTION_ADDI, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
+	{MipsInstruction::INSTRUCTION_ADDIU, Instruction((int)MipsInstruction::INSTRUCTION_ADDIU, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
+
+    {MipsInstruction::INSTRUCTION_LUI, Instruction((int)MipsInstruction::INSTRUCTION_LUI, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
+	{MipsInstruction::INSTRUCTION_SW, Instruction((int)MipsInstruction::INSTRUCTION_SW, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
+
+    //{MipsInstruction::INSTRUCTION_LUI, Instruction((int)MipsInstruction::INSTRUCTION_LUI, InstructionType::IType, PipelineParts::INSTRUCT_FETCH | PipelineParts::EXECUTE | PipelineParts::REGISTER_WRITE)},
 };
 
 Instruction::Instruction():
@@ -15,8 +22,8 @@ Instruction::Instruction():
 {
 }
 
-Instruction::Instruction(uint32 asInteger, InstructionType instructionType):
-	asInteger(asInteger), instructionType(instructionType)
+Instruction::Instruction(uint32 asInteger, InstructionType instructionType, PipelineParts pipelineUsed):
+	asInteger(asInteger), instructionType(instructionType), pipelineUsed(pipelineUsed)
 {
 
 }

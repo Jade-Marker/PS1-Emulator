@@ -41,5 +41,6 @@ public:
 	uint32 ReadInt(uint32 address);
 
 	void Write(uint32 address, uint32 length, uint8* data);
+	void WriteInt(uint32 address, uint32 data);
 };
 
