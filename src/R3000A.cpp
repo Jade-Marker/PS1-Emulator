@@ -23,10 +23,37 @@ void R3000A::Cycle()
 
         switch (instruction.asIType.op)
         {
+            case MipsInstruction::INSTRUCTION_SPECIAL:
+                switch (instruction.asRtype.funct)
+                {
+                    case SpecialInstruction::INSTRUCTION_SLL:
+                        _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rt] << instruction.asRtype.shamt;
+                        break;
+
+                    case SpecialInstruction::INSTRUCTION_OR:
+                        _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] | _registers[instruction.asRtype.rt];
+                        break;
+
+                    default:
+                        throw std::runtime_error("Instruction not implemented");
+                        break;
+                }
+            break;
+
+            case MipsInstruction::INSTRUCTION_J:
+                _programCounter = (instruction.asJType.target << 2) + (_programCounter & 0xF0000000);
+                _programCounter -= 4; //So that when it gets incremeneted after, it "just works" :3
+                break;
+
             case MipsInstruction::INSTRUCTION_JAL:
                 _programCounter = (instruction.asJType.target << 2) + (_programCounter & 0xF0000000);
                 _programCounter -= 4; //So that when it gets incremeneted after, it "just works" :3
                 break;
+            
+            //case MipsInstruction::INSTRUCTION_BNE:
+            //    if (_registers[instruction.asIType.rs] != _registers[instruction.asIType.rt])
+            //        _programCounter += ((std::abs((int16)instruction.asIType.immediate)) << 2) * -1 * (instruction.asIType.immediate & 0x8000);
+            //    break;
 
             case MipsInstruction::INSTRUCTION_ADDI:
                 _registers[instruction.asIType.rt] = (int32)_registers[instruction.asIType.rs] + (int32)instruction.asIType.immediate;
@@ -35,13 +62,24 @@ void R3000A::Cycle()
             case MipsInstruction::INSTRUCTION_ADDIU:
                 _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] + instruction.asIType.immediate;
                 break;
+            case MipsInstruction::INSTRUCTION_ORI:
+                _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] | instruction.asIType.immediate;
+                break;
 
             case MipsInstruction::INSTRUCTION_LUI:
                 _registers[instruction.asIType.rt] = (instruction.asIType.immediate << 16) & 0xFFFF0000;
                 break;
 
+            //case MipsInstruction::INSTRUCTION_COP0:
+
+            //    break;
+
             case MipsInstruction::INSTRUCTION_SW:
                 _pMemory->WriteInt(globalPointer + instruction.asIType.immediate, _registers[instruction.asIType.rt]);
+                break;
+
+            default:
+                throw std::runtime_error("Instruction not implemented");
                 break;
         }
 
