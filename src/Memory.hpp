@@ -37,10 +37,13 @@ public:
     
 	void AddRange(MemoryRange range);
 
-	uint8 Read(uint32 address);
-	uint32 ReadInt(uint32 address);
+	uint8 ReadByte(uint32 address);
+	uint16 ReadHalfWord(uint32 address);
+	uint32 ReadWord(uint32 address);
 
 	void Write(uint32 address, uint32 length, uint8* data);
-	void WriteInt(uint32 address, uint32 data);
+	void WriteByte(uint32 address, uint8 data);
+	void WriteHalfword(uint32 address, uint16 data);
+	void WriteWord(uint32 address, uint32 data);
 };
 

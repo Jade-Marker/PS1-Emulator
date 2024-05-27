@@ -51,7 +51,7 @@ void Memory::AddRange(MemoryRange range)
 		_memory.push_back(range);
 }
 
-uint8 Memory::Read(uint32 address)
+uint8 Memory::ReadByte(uint32 address)
 {
 	MemoryRange range;
 	GetRange(address, range);
@@ -59,7 +59,17 @@ uint8 Memory::Read(uint32 address)
 	return range.buffer[address - range.startingAddress];
 }
 
-uint32 Memory::ReadInt(uint32 address)
+uint16 Memory::ReadHalfWord(uint32 address)
+{
+	MemoryRange range;
+	GetRange(address, range);
+
+	uint16* buffer = (uint16*)&range.buffer[address - range.startingAddress];
+
+	return *buffer;
+}
+
+uint32 Memory::ReadWord(uint32 address)
 {
 	MemoryRange range;
 	GetRange(address, range);
@@ -83,7 +93,25 @@ void Memory::Write(uint32 address, uint32 length, uint8* data)
 	}
 }
 
-void Memory::WriteInt(uint32 address, uint32 data)
+void Memory::WriteByte(uint32 address, uint8 data)
+{
+	MemoryRange range;
+	GetRange(address, range);
+
+	uint8* dst = (uint8*)&range.buffer[address - range.startingAddress];
+	*dst = data;
+}
+
+void Memory::WriteHalfword(uint32 address, uint16 data)
+{
+	MemoryRange range;
+	GetRange(address, range);
+
+	uint16* dst = (uint16*)&range.buffer[address - range.startingAddress];
+	*dst = data;
+}
+
+void Memory::WriteWord(uint32 address, uint32 data)
 {
 	MemoryRange range;
 	GetRange(address, range);

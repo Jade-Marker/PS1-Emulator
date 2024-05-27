@@ -8,8 +8,6 @@
 #include "Constants.hpp"
 
 //todo
-//Set CPU to match whatever state actual one does on program start
-//Get all instructions from BasicGraphics working
 //Evaluate if component/componentmanager structure is still good?
 //Evaluate if MemoryRange structure is still good?
 //Get window drawing
@@ -39,7 +37,7 @@ uint8* ReadBinaryFile(uint32& size, const std::string& filePath)
 int main()
 {
 	uint32 programSize;	uint32 biosSize;
-	uint8* program = ReadBinaryFile(programSize, "Executables/BasicAsm.ps-exe");
+	uint8* program = ReadBinaryFile(programSize, "Executables/BasicGraphics.ps-exe");
 	uint8* bios = ReadBinaryFile(biosSize, "OpenBios/openbios.bin");
 
 	if (biosSize != 512 * 1024)
@@ -52,7 +50,14 @@ int main()
 	memory.AddRange(MemoryRange(0xa0000000, 2 * 1024 * 1024, ram));
 	memory.AddRange(MemoryRange(0x1f800000, 1024));
 	memory.AddRange(MemoryRange(0xbfc00000, 512 * 1024));
-	memory.AddRange(MemoryRange(0x1f000000, 64 * 1024));
+	//memory.AddRange(MemoryRange(0x1f000000, 64 * 1024));
+
+	uint8* hardwareRegisters = new uint8[8 * 1024];
+	memory.AddRange(MemoryRange(0x1f801000, 8 * 1024, hardwareRegisters));
+
+	
+	for (uint32 i = 0; i < 2 * 1024 * 1024; i++)
+		ram[i] = 0;
 
 	memory.Write(0x80010000, programSize - 2048, program + 2048);
 	memory.Write(0xbfc00000, 512 * 1024, bios);
@@ -61,7 +66,13 @@ int main()
 	uint32 programCounter = *(uint32*)(program + 8 + 16);
     
     ComponentManager componentManager;
-    componentManager.AddComponent(new R3000A(&memory, programCounter));
+	componentManager.AddComponent(new R3000A(&memory, programCounter, std::array<uint32, 32>
+	{
+		0x00000000, 0x801FFF0,	0x00000000,	0x8011734,	0x8011884,	0x00000000, 0x00000000, 0x00000000,
+		0X00006454, 0x000000F4, 0x000000B0, 0x80011600, 0xA0010004, 0x00000001, 0xFFFFFFFF, 0x00000000,
+		0x00004374, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+		0x00000010, 0x00000008, 0x1FC09238, 0x00000000, 0x00000000, 0x801FFFC8, 0x801FFFF0, 0x80116B8
+	}));
 
 	while (true)
 		componentManager.RunNTicks(100);

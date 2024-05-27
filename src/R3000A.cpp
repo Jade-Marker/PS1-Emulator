@@ -5,9 +5,9 @@
 
 #define str(x) #x
 
-R3000A::R3000A(Memory* pMemory, uint32 programCounter):
+R3000A::R3000A(Memory* pMemory, uint32 programCounter, const std::array<uint32,32>& initRegisterValues):
     Component(cR3000AClockSpeedHz), _pMemory(pMemory), _programCounter(programCounter),
-    _mulHigh(0), _mulLow(0), _registers(), _numCyclesTillFree(0)
+    _mulHigh(0), _mulLow(0), _registers(initRegisterValues), _numCyclesTillFree(0)
 {
     
 }
@@ -17,9 +17,10 @@ void R3000A::Cycle()
     if (_numCyclesTillFree == 0)
     {
         std::cout << "CPU cycle" << std::endl;
-        Instruction instruction = Instruction::GetInstruction(_pMemory->ReadInt(_programCounter));
+        Instruction instruction = Instruction::GetInstruction(_pMemory->ReadWord(_programCounter));
+        _programCounter += 4;
 
-        std::cout << "Instruction: " << std::hex << instruction.asInteger << '\n';
+        std::cout << "Instruction: " << instruction.ToString() << " = 0x" << std::hex << instruction.asInteger << '\n';
 
         switch (instruction.asIType.op)
         {
@@ -30,8 +31,28 @@ void R3000A::Cycle()
                         _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rt] << instruction.asRtype.shamt;
                         break;
 
+                    case SpecialInstruction::INSTRUCTION_JR:
+                        _programCounter = _registers[instruction.asRtype.rs];
+                        break;
+
+                    case SpecialInstruction::INSTRUCTION_ADDU:
+                        _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] + _registers[instruction.asRtype.rt];
+                        break;
+
                     case SpecialInstruction::INSTRUCTION_OR:
                         _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] | _registers[instruction.asRtype.rt];
+                        break;
+
+                    case SpecialInstruction::INSTRUCTION_AND:
+                        _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] & _registers[instruction.asRtype.rt];
+                        break;
+
+                    case SpecialInstruction::INSTRUCTION_SLTU:
+                        if (_registers[instruction.asRtype.rs] < _registers[instruction.asRtype.rt])
+                            _registers[instruction.asRtype.rd] = 1;
+                        else
+                            _registers[instruction.asRtype.rd] = 0;
+
                         break;
 
                     default:
@@ -42,26 +63,31 @@ void R3000A::Cycle()
 
             case MipsInstruction::INSTRUCTION_J:
                 _programCounter = (instruction.asJType.target << 2) + (_programCounter & 0xF0000000);
-                _programCounter -= 4; //So that when it gets incremeneted after, it "just works" :3
                 break;
 
             case MipsInstruction::INSTRUCTION_JAL:
-                _programCounter = (instruction.asJType.target << 2) + (_programCounter & 0xF0000000);
-                _programCounter -= 4; //So that when it gets incremeneted after, it "just works" :3
-                break;
-            
-            //case MipsInstruction::INSTRUCTION_BNE:
-            //    if (_registers[instruction.asIType.rs] != _registers[instruction.asIType.rt])
-            //        _programCounter += ((std::abs((int16)instruction.asIType.immediate)) << 2) * -1 * (instruction.asIType.immediate & 0x8000);
-            //    break;
+                _returnAddress = _programCounter + 4;
 
-            case MipsInstruction::INSTRUCTION_ADDI:
-                _registers[instruction.asIType.rt] = (int32)_registers[instruction.asIType.rs] + (int32)instruction.asIType.immediate;
+                _programCounter = (instruction.asJType.target << 2) + (_programCounter & 0xF0000000);
+                break;
+
+            case MipsInstruction::INSTRUCTION_BEQ:
+                if (_registers[instruction.asIType.rs] == _registers[instruction.asIType.rt])
+                    _programCounter = _programCounter + (((int32)(int16)instruction.asIType.immediate) << 2);
+                break;
+            case MipsInstruction::INSTRUCTION_BNE:
+                if (_registers[instruction.asIType.rs] != _registers[instruction.asIType.rt])
+                    _programCounter = _programCounter + (((int32)(int16)instruction.asIType.immediate) << 2);
                 break;
 
             case MipsInstruction::INSTRUCTION_ADDIU:
-                _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] + instruction.asIType.immediate;
+                _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate);
                 break;
+
+            case MipsInstruction::INSTRUCTION_ANDI:
+                _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] & instruction.asIType.immediate;
+                break;
+
             case MipsInstruction::INSTRUCTION_ORI:
                 _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] | instruction.asIType.immediate;
                 break;
@@ -69,13 +95,29 @@ void R3000A::Cycle()
             case MipsInstruction::INSTRUCTION_LUI:
                 _registers[instruction.asIType.rt] = (instruction.asIType.immediate << 16) & 0xFFFF0000;
                 break;
+            
+            case MipsInstruction::INSTRUCTION_LW:
+                _registers[instruction.asIType.rt] = _pMemory->ReadWord(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate));
+                break;
 
-            //case MipsInstruction::INSTRUCTION_COP0:
+            case MipsInstruction::INSTRUCTION_LBU:
+                _registers[instruction.asIType.rt] = (uint8)(_pMemory->ReadByte(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate)));
+                break;
 
-            //    break;
+            case MipsInstruction::INSTRUCTION_LHU:
+                _registers[instruction.asIType.rt] = (uint16)(_pMemory->ReadHalfWord(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate)));
+                break;
+
+            case MipsInstruction::INSTRUCTION_SB:
+                _pMemory->WriteByte(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate), _registers[instruction.asIType.rt]);
+                break;
+
+            case MipsInstruction::INSTRUCTION_SH:
+                _pMemory->WriteHalfword(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate), _registers[instruction.asIType.rt]);
+                break;
 
             case MipsInstruction::INSTRUCTION_SW:
-                _pMemory->WriteInt(globalPointer + instruction.asIType.immediate, _registers[instruction.asIType.rt]);
+                _pMemory->WriteWord(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate), _registers[instruction.asIType.rt]);
                 break;
 
             default:
@@ -83,9 +125,8 @@ void R3000A::Cycle()
                 break;
         }
 
-        constantZero = 0;
+        _constantZero = 0;
 
-        _programCounter += 4;
         OutputCPUState();
     }
     else
