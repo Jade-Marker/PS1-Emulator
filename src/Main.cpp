@@ -7,12 +7,11 @@
 #include "Constants.hpp"
 
 //todo
-//Evaluate if MemoryRange structure is still good?
-//Update Memory so that components can subscribe to changes in given range
 //Get window drawing
 //Get vulkan drawing triangle
 //Get vulkan drawing constantly changing vertex list
 //Get GPU component 
+//Optimise Memory so that getting a range is a lookup, not a search
 //Get program running via bios reset
 //Update instructions and cpu to properly match pipelining
 //Get componentmanager running at given tick rate per second
@@ -71,6 +70,12 @@ int main()
 		0x00004374, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
 		0x00000010, 0x00000008, 0x1FC09238, 0x00000000, 0x00000000, 0x801FFFC8, 0x801FFFF0, 0x80116B8
 	});
+
+	memory.SubscribeToRange(MemorySubscription(0x1f801810, sizeof(uint32) * 2, true, true, 
+		[](uint32 address) 
+		{
+			std::cout << "access vram i/o port 0x" << std::hex << address << std::endl;
+		}));
 
 	while (true)
 	{
