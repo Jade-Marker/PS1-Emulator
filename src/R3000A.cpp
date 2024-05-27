@@ -6,16 +6,22 @@
 #define str(x) #x
 
 R3000A::R3000A(Memory* pMemory, uint32 programCounter, const std::array<uint32,32>& initRegisterValues):
-    Component(cR3000AClockSpeedHz), _pMemory(pMemory), _programCounter(programCounter),
+    _pMemory(pMemory), _programCounter(programCounter),
     _mulHigh(0), _mulLow(0), _registers(initRegisterValues), _numCyclesTillFree(0)
 {
     
 }
 
-void R3000A::Cycle()
+void R3000A::RunNCycles(uint32 numCycles)
 {
-    if (_numCyclesTillFree == 0)
+    for (uint32 i = 0; i < numCycles; i++)
     {
+        if (_numCyclesTillFree != 0)
+        {
+            _numCyclesTillFree--;
+            continue;
+        }
+
         std::cout << "CPU cycle" << std::endl;
         Instruction instruction = Instruction::GetInstruction(_pMemory->ReadWord(_programCounter));
         _programCounter += 4;
@@ -27,39 +33,39 @@ void R3000A::Cycle()
             case MipsInstruction::INSTRUCTION_SPECIAL:
                 switch (instruction.asRtype.funct)
                 {
-                    case SpecialInstruction::INSTRUCTION_SLL:
-                        _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rt] << instruction.asRtype.shamt;
-                        break;
+                case SpecialInstruction::INSTRUCTION_SLL:
+                    _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rt] << instruction.asRtype.shamt;
+                    break;
 
-                    case SpecialInstruction::INSTRUCTION_JR:
-                        _programCounter = _registers[instruction.asRtype.rs];
-                        break;
+                case SpecialInstruction::INSTRUCTION_JR:
+                    _programCounter = _registers[instruction.asRtype.rs];
+                    break;
 
-                    case SpecialInstruction::INSTRUCTION_ADDU:
-                        _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] + _registers[instruction.asRtype.rt];
-                        break;
+                case SpecialInstruction::INSTRUCTION_ADDU:
+                    _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] + _registers[instruction.asRtype.rt];
+                    break;
 
-                    case SpecialInstruction::INSTRUCTION_OR:
-                        _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] | _registers[instruction.asRtype.rt];
-                        break;
+                case SpecialInstruction::INSTRUCTION_OR:
+                    _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] | _registers[instruction.asRtype.rt];
+                    break;
 
-                    case SpecialInstruction::INSTRUCTION_AND:
-                        _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] & _registers[instruction.asRtype.rt];
-                        break;
+                case SpecialInstruction::INSTRUCTION_AND:
+                    _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] & _registers[instruction.asRtype.rt];
+                    break;
 
-                    case SpecialInstruction::INSTRUCTION_SLTU:
-                        if (_registers[instruction.asRtype.rs] < _registers[instruction.asRtype.rt])
-                            _registers[instruction.asRtype.rd] = 1;
-                        else
-                            _registers[instruction.asRtype.rd] = 0;
+                case SpecialInstruction::INSTRUCTION_SLTU:
+                    if (_registers[instruction.asRtype.rs] < _registers[instruction.asRtype.rt])
+                        _registers[instruction.asRtype.rd] = 1;
+                    else
+                        _registers[instruction.asRtype.rd] = 0;
 
-                        break;
+                    break;
 
-                    default:
-                        throw std::runtime_error("Instruction not implemented");
-                        break;
+                default:
+                    throw std::runtime_error("Instruction not implemented");
+                    break;
                 }
-            break;
+                break;
 
             case MipsInstruction::INSTRUCTION_J:
                 _programCounter = (instruction.asJType.target << 2) + (_programCounter & 0xF0000000);
@@ -67,7 +73,6 @@ void R3000A::Cycle()
 
             case MipsInstruction::INSTRUCTION_JAL:
                 _returnAddress = _programCounter + 4;
-
                 _programCounter = (instruction.asJType.target << 2) + (_programCounter & 0xF0000000);
                 break;
 
@@ -99,11 +104,11 @@ void R3000A::Cycle()
             case MipsInstruction::INSTRUCTION_LW:
                 _registers[instruction.asIType.rt] = _pMemory->ReadWord(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate));
                 break;
-
+            
             case MipsInstruction::INSTRUCTION_LBU:
                 _registers[instruction.asIType.rt] = (uint8)(_pMemory->ReadByte(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate)));
                 break;
-
+            
             case MipsInstruction::INSTRUCTION_LHU:
                 _registers[instruction.asIType.rt] = (uint16)(_pMemory->ReadHalfWord(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate)));
                 break;
@@ -129,8 +134,6 @@ void R3000A::Cycle()
 
         OutputCPUState();
     }
-    else
-        _numCyclesTillFree--;
 }
 
 void R3000A::OutputCPUState()

@@ -19,20 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Component.cpp" />
-    <ClCompile Include="src\ComponentManager.cpp" />
     <ClCompile Include="src\Instruction.cpp" />
-    <ClCompile Include="src\Maths.cpp" />
     <ClCompile Include="src\Memory.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\R3000A.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Component.hpp" />
-    <ClInclude Include="src\ComponentManager.hpp" />
     <ClInclude Include="src\Constants.hpp" />
     <ClInclude Include="src\Instruction.hpp" />
-    <ClInclude Include="src\Maths.hpp" />
     <ClInclude Include="src\Memory.hpp" />
     <ClInclude Include="src\R3000A.hpp" />
     <ClInclude Include="src\Types.hpp" />

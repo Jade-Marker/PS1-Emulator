@@ -3,13 +3,12 @@
 #include <fstream>
 #include <vector>
 #include "Memory.hpp"
-#include "ComponentManager.hpp"
 #include "R3000A.hpp"
 #include "Constants.hpp"
 
 //todo
-//Evaluate if component/componentmanager structure is still good?
 //Evaluate if MemoryRange structure is still good?
+//Update Memory so that components can subscribe to changes in given range
 //Get window drawing
 //Get vulkan drawing triangle
 //Get vulkan drawing constantly changing vertex list
@@ -65,18 +64,18 @@ int main()
 	//uint32 programCounter = 0xbfc00000;
 	uint32 programCounter = *(uint32*)(program + 8 + 16);
     
-    ComponentManager componentManager;
-	componentManager.AddComponent(new R3000A(&memory, programCounter, std::array<uint32, 32>
+    R3000A cpu = R3000A(&memory, programCounter, std::array<uint32, 32>
 	{
 		0x00000000, 0x801FFF0,	0x00000000,	0x8011734,	0x8011884,	0x00000000, 0x00000000, 0x00000000,
 		0X00006454, 0x000000F4, 0x000000B0, 0x80011600, 0xA0010004, 0x00000001, 0xFFFFFFFF, 0x00000000,
 		0x00004374, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
 		0x00000010, 0x00000008, 0x1FC09238, 0x00000000, 0x00000000, 0x801FFFC8, 0x801FFFF0, 0x80116B8
-	}));
+	});
 
 	while (true)
-		componentManager.RunNTicks(100);
-	//componentManager.RunNTicks(1000);
+	{
+		cpu.RunNCycles(1000);
+	}
 
     delete[] program;
 

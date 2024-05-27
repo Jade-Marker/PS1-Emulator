@@ -2,10 +2,9 @@
 
 #include <array>
 
-#include "Component.hpp"
 #include "Memory.hpp"
 
-class R3000A : public Component
+class R3000A
 {
 private:
     Memory* _pMemory;
@@ -77,7 +76,7 @@ private:
 public:
     R3000A(Memory* pMemory, uint32 programCounter, const std::array<uint32, 32>& initRegisterValues);
         
-    virtual void Cycle();
+    void RunNCycles(uint32 numCycles);
 
     void OutputCPUState();
 };
