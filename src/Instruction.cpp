@@ -13,6 +13,7 @@ std::map<MipsInstruction, Instruction> instructionsMap
 
 	{MipsInstruction::INSTRUCTION_ADDI, Instruction((int)MipsInstruction::INSTRUCTION_ADDI, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_ADDIU, Instruction((int)MipsInstruction::INSTRUCTION_ADDIU, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
+	{MipsInstruction::INSTRUCTION_SLTIU, Instruction((int)MipsInstruction::INSTRUCTION_SLTIU, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_ANDI, Instruction((int)MipsInstruction::INSTRUCTION_ANDI, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_ORI, Instruction((int)MipsInstruction::INSTRUCTION_ORI, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 

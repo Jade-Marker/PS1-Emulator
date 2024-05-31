@@ -89,6 +89,14 @@ void R3000A::RunNCycles(uint32 numCycles)
                 _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate);
                 break;
 
+            case MipsInstruction::INSTRUCTION_SLTIU:
+                if (_registers[instruction.asIType.rs] < instruction.asIType.immediate)
+                    _registers[instruction.asIType.rt] = 1;
+                else
+                    _registers[instruction.asIType.rt] = 0;
+
+                break;
+
             case MipsInstruction::INSTRUCTION_ANDI:
                 _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] & instruction.asIType.immediate;
                 break;

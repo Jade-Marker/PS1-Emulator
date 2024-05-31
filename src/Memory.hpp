@@ -4,16 +4,25 @@
 #include <functional>
 #include "Types.hpp"
 
+enum class AccessType
+{
+	UKNOWN,
+
+	READ,
+	WRITE
+};
+
 struct MemorySubscription
 {
 	uint32 startAddress;
 	uint32 size;
 	bool subscribeToReads;
 	bool subscribeToWrites;
-	std::function<void(uint32)> callback;
+	bool allowsMemoryWrite;
+	std::function<void(uint32, AccessType, uint32)> callback;
 
-	MemorySubscription(uint32 startAddress, uint32 size, bool subscribeToReads, bool subscribeToWrites, std::function<void(uint32)> callback) :
-		startAddress(startAddress), size(size), subscribeToReads(subscribeToReads), subscribeToWrites(subscribeToWrites), callback(callback)
+	MemorySubscription(uint32 startAddress, uint32 size, bool subscribeToReads, bool subscribeToWrites, bool allowsMemoryWrite, std::function<void(uint32, AccessType, uint32)> callback) :
+		startAddress(startAddress), size(size), subscribeToReads(subscribeToReads), subscribeToWrites(subscribeToWrites), allowsMemoryWrite(allowsMemoryWrite), callback(callback)
 	{}
 };
 
@@ -38,7 +47,7 @@ struct MemoryRange
 	{}
 
 	void inline ReadSubscriptions(uint32 address);
-	void inline WriteSubscriptions(uint32 address);
+	bool inline WriteSubscriptions(uint32 address, uint32 data);
 };
 
 class Memory

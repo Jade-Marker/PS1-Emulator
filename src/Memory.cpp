@@ -9,20 +9,27 @@ void MemoryRange::ReadSubscriptions(uint32 address)
 	{
 		if (subscription.subscribeToReads && address >= subscription.startAddress && address < subscription.startAddress + subscription.size)
 		{
-			subscription.callback(address);
+			subscription.callback(address, AccessType::READ, 0);
 		}
 	}
 }
 
-void MemoryRange::WriteSubscriptions(uint32 address)
+bool MemoryRange::WriteSubscriptions(uint32 address, uint32 data)
 {
+	bool writeBackOkay = true;
+
 	for (const auto& subscription : subscriptions)
 	{
 		if (subscription.subscribeToWrites && address >= subscription.startAddress && address < subscription.startAddress + subscription.size)
 		{
-			subscription.callback(address);
+			subscription.callback(address, AccessType::WRITE, data);
+
+			if (!subscription.allowsMemoryWrite)
+				writeBackOkay = false;
 		}
 	}
+
+	return writeBackOkay;
 }
 
 MemoryRange& Memory::GetRange(uint32 address)
@@ -113,41 +120,45 @@ uint32 Memory::ReadWord(uint32 address)
 void Memory::Write(uint32 address, uint32 length, uint8* data)
 {
 	MemoryRange& range = GetRange(address);
-	range.WriteSubscriptions(address);
-
-	uint8* dst = &range.buffer[address - range.startingAddress];
-	for (uint32 i = 0; i < length; i++)
+	if (range.WriteSubscriptions(address, 0))	//large write like this never happens via instruction, so ignore
 	{
-		*dst = *data;
-		dst++;
-		data++;
+		uint8* dst = &range.buffer[address - range.startingAddress];
+		for (uint32 i = 0; i < length; i++)
+		{
+			*dst = *data;
+			dst++;
+			data++;
+		}
 	}
 }
 
 void Memory::WriteByte(uint32 address, uint8 data)
 {
 	MemoryRange& range = GetRange(address);
-	range.WriteSubscriptions(address);
-
-	uint8* dst = (uint8*)&range.buffer[address - range.startingAddress];
-	*dst = data;
+	if (range.WriteSubscriptions(address, data))
+	{
+		uint8* dst = (uint8*)&range.buffer[address - range.startingAddress];
+		*dst = data;
+	}
 }
 
 void Memory::WriteHalfword(uint32 address, uint16 data)
 {
 	MemoryRange& range = GetRange(address);
-	range.WriteSubscriptions(address);
-
-	uint16* dst = (uint16*)&range.buffer[address - range.startingAddress];
-	*dst = data;
+	if (range.WriteSubscriptions(address, data))
+	{
+		uint16* dst = (uint16*)&range.buffer[address - range.startingAddress];
+		*dst = data;
+	}
 }
 
 void Memory::WriteWord(uint32 address, uint32 data)
 {
 	MemoryRange& range = GetRange(address);
-	range.WriteSubscriptions(address);
-
-	uint32* dst = (uint32*) & range.buffer[address - range.startingAddress];
-	*dst = data;
+	if (range.WriteSubscriptions(address, data))
+	{
+		uint32* dst = (uint32*)&range.buffer[address - range.startingAddress];
+		*dst = data;
+	}
 }
 

@@ -4,13 +4,17 @@
 #include <vector>
 #include "Memory.hpp"
 #include "R3000A.hpp"
+#include "Gpu.hpp"
+#include "DMAController.hpp"
+#include "IRQController.hpp"
 #include "Constants.hpp"
 
 //todo
+//Update GPU component to be accurate
 //Get window drawing
 //Get vulkan drawing triangle
 //Get vulkan drawing constantly changing vertex list
-//Get GPU component 
+//Cleanup irq/dma/gpu into base memorymappped component class
 //Optimise Memory so that getting a range is a lookup, not a search
 //Get program running via bios reset
 //Update instructions and cpu to properly match pipelining
@@ -50,9 +54,17 @@ int main()
 	memory.AddRange(MemoryRange(0xbfc00000, 512 * 1024));
 	//memory.AddRange(MemoryRange(0x1f000000, 64 * 1024));
 
-	uint8* hardwareRegisters = new uint8[8 * 1024];
-	memory.AddRange(MemoryRange(0x1f801000, 8 * 1024, hardwareRegisters));
+	Gpu gpu = Gpu();
+	DMAController dmaController = DMAController(&memory);
+	IRQController irq = IRQController();
+	
+	memory.AddRange(MemoryRange(0x1f801810, 2 * sizeof(uint32), gpu.GetGpuDataAddress()));
+	memory.AddRange(MemoryRange(0x1f801080, sizeof(DMAController), dmaController.GetMemory()));
+	memory.AddRange(MemoryRange(0xbf801070, 2, irq.GetMemory()));
 
+	gpu.SetupCallback(memory);
+	dmaController.SetupCallback(memory);
+	irq.SetupCallback(memory);
 	
 	for (uint32 i = 0; i < 2 * 1024 * 1024; i++)
 		ram[i] = 0;
@@ -70,12 +82,6 @@ int main()
 		0x00004374, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
 		0x00000010, 0x00000008, 0x1FC09238, 0x00000000, 0x00000000, 0x801FFFC8, 0x801FFFF0, 0x80116B8
 	});
-
-	memory.SubscribeToRange(MemorySubscription(0x1f801810, sizeof(uint32) * 2, true, true, 
-		[](uint32 address) 
-		{
-			std::cout << "access vram i/o port 0x" << std::hex << address << std::endl;
-		}));
 
 	while (true)
 	{
