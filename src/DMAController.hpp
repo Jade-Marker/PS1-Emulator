@@ -32,10 +32,10 @@ union DMAPrimaryControlRegister
 class DMAController
 {
 private:
-	Memory* pMemory;
+	Memory* _pMemory;
 
-	std::array<DMAChannel, 7> dmaChannels;
-	DMAPrimaryControlRegister dmaPrimaryControlRegister;
+	std::array<DMAChannel, 7> _dmaChannels;
+	DMAPrimaryControlRegister _dmaPrimaryControlRegister;
 
 public:
 	DMAController(Memory* pMemory);

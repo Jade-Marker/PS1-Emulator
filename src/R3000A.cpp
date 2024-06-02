@@ -22,11 +22,11 @@ void R3000A::RunNCycles(uint32 numCycles)
             continue;
         }
 
-        std::cout << "CPU cycle" << std::endl;
+        //std::cout << "CPU cycle" << std::endl;
         Instruction instruction = Instruction::GetInstruction(_pMemory->ReadWord(_programCounter));
         _programCounter += 4;
 
-        std::cout << "Instruction: " << instruction.ToString() << " = 0x" << std::hex << instruction.asInteger << '\n';
+        //std::cout << "Instruction: " << instruction.ToString() << " = 0x" << std::hex << instruction.asInteger << '\n';
 
         switch (instruction.asIType.op)
         {
@@ -140,7 +140,7 @@ void R3000A::RunNCycles(uint32 numCycles)
 
         _constantZero = 0;
 
-        OutputCPUState();
+        //OutputCPUState();
     }
 }
 

@@ -10,7 +10,6 @@
 #include "Constants.hpp"
 
 //todo
-//Update GPU component to be accurate
 //Get window drawing
 //Get vulkan drawing triangle
 //Get vulkan drawing constantly changing vertex list

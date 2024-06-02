@@ -2,7 +2,7 @@
 #include <iostream>
 
 DMAController::DMAController(Memory* pMemory):
-	pMemory(pMemory)
+	_pMemory(pMemory)
 {
 }
 
@@ -31,28 +31,35 @@ void DMAController::SetupCallback(Memory& memory)
 						{
 							//send linked list to gpu
 							
-							uint32 entry = pMemory->ReadWord(pMemory->ReadWord(dmaChannels[2].dmaMemoryAddressRegister));
+							uint32 entry = _pMemory->ReadWord(_pMemory->ReadWord(_dmaChannels[2].dmaMemoryAddressRegister));
+							uint32 currentWordAddress = _pMemory->ReadWord(_dmaChannels[2].dmaMemoryAddressRegister) + 4;
 							while (entry != 0xFFFFFFFF)
 							{
 								uint32 nextAddress = entry & 0x00FFFFFF;
 								uint8 sizeofEntry = (entry & 0xFF000000) >> 24;
 
+								//Send data to gpu
+								for (int i = 0; i < sizeofEntry; i++)
+								{
+									_pMemory->WriteWord(0x1f801810, _pMemory->ReadWord(currentWordAddress));
+									currentWordAddress += 4;
+								}
 
-
-								entry = pMemory->ReadWord(nextAddress);
+								currentWordAddress = nextAddress + 4;
+								entry = _pMemory->ReadWord(nextAddress);
 							}
 						}
 						break;
 
 						case 6:
 							{
-								uint32 currentAddress = dmaChannels[6].dmaMemoryAddressRegister;
-								for (int i = 0; i < dmaChannels[6].dmaBlockControlRegister; i++)
+								uint32 currentAddress = _dmaChannels[6].dmaMemoryAddressRegister;
+								for (int i = 0; i < _dmaChannels[6].dmaBlockControlRegister; i++)
 								{
-									pMemory->WriteWord(currentAddress, (currentAddress - 4) & 0x00FFFFFF);
+									_pMemory->WriteWord(currentAddress, (currentAddress - 4) & 0x00FFFFFF);
 									currentAddress -= 4;
 								}
-								pMemory->WriteWord(currentAddress, 0xFFFFFFFF);
+								_pMemory->WriteWord(currentAddress, 0xFFFFFFFF);
 							}
 							break;
 
@@ -66,15 +73,15 @@ void DMAController::SetupCallback(Memory& memory)
 			{
 				if (lsbOfAddress == 0x08)
 				{
-					dmaChannels[dmaChannelSelect].dmaChannelControlRegister &= 0x00FFFFFF;
+					_dmaChannels[dmaChannelSelect].dmaChannelControlRegister &= 0x00FFFFFF;
 				}
 			}
 
-			std::cout << "access of type " << (int)accessType << " for dma, at 0x" << std::hex << address << std::endl;
+			//std::cout << "access of type " << (int)accessType << " for dma, at 0x" << std::hex << address << std::endl;
 		}));
 }
 
 uint8* DMAController::GetMemory()
 {
-	return (uint8*) & dmaChannels[0];
+	return (uint8*) & _dmaChannels[0];
 }
