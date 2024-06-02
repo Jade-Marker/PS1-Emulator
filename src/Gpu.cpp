@@ -18,8 +18,11 @@ std::map<PrimitiveID, uint32> primitiveSizes
 	{PrimitiveID::MASK_SETTINGS, 1},
 };
 
-Gpu::Gpu()
+Gpu::Gpu(std::vector<Vertex>* vertices, glm::vec4* clearColor)
 {
+	_vertices = vertices;
+	_clearColor = clearColor;
+
 	_gpuControl.busyBit = 1;
 	_gpuControl.readyToReceiveCommands = 1;
 }
@@ -31,14 +34,26 @@ void Gpu::ProcessPrimitive()
 	switch (primitiveId)
 	{
 		case PrimitiveID::FRAMEBUFFER_CLEAR:
+			{
+				uint8 r = (_primitiveData[0] >> 0) & 0xFF;
+				uint8 g = (_primitiveData[0] >> 8) & 0xFF;
+				uint8 b = (_primitiveData[0] >> 16) & 0xFF;
+
+				_clearColor->r = (float)(r) / 255.0f;
+				_clearColor->g = (float)(g) / 255.0f;
+				_clearColor->b = (float)(b) / 255.0f;
+			}
 			break;
 
 		case PrimitiveID::MONOCHROME_TRIANGLE:
 			{
-				std::cout << "Drawing monochrome triangle of color: " << std::hex << (_primitiveData[0] & 0x00FFFFFF) << std::endl << std::dec;
-				std::cout << "v0 = (" << (_primitiveData[1] & 0x0000FFFF) << ", " << ((_primitiveData[1] & 0xFFFF0000) >> 16) << ") " << std::endl;
-				std::cout << "v1 = (" << (_primitiveData[2] & 0x0000FFFF) << ", " << ((_primitiveData[2] & 0xFFFF0000) >> 16) << ") " << std::endl;
-				std::cout << "v2 = (" << (_primitiveData[3] & 0x0000FFFF) << ", " << ((_primitiveData[3] & 0xFFFF0000) >> 16) << ") " << std::endl;
+				uint8 r = (_primitiveData[0] >> 0) & 0xFF;
+				uint8 g = (_primitiveData[0] >> 8) & 0xFF;
+				uint8 b = (_primitiveData[0] >> 16) & 0xFF;
+
+				_vertices->push_back({ {(_primitiveData[1] & 0x0000FFFF), ((_primitiveData[1] & 0xFFFF0000) >> 16)}, {r, g, b} });
+				_vertices->push_back({ {(_primitiveData[2] & 0x0000FFFF), ((_primitiveData[2] & 0xFFFF0000) >> 16)}, {r, g, b} });
+				_vertices->push_back({ {(_primitiveData[3] & 0x0000FFFF), ((_primitiveData[3] & 0xFFFF0000) >> 16)}, {r, g, b} });
 			}
 			break;
 

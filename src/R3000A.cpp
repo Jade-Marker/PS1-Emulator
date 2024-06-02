@@ -12,9 +12,11 @@ R3000A::R3000A(Memory* pMemory, uint32 programCounter, const std::array<uint32,3
     
 }
 
-void R3000A::RunNCycles(uint32 numCycles)
+void R3000A::Run()
 {
-    for (uint32 i = 0; i < numCycles; i++)
+    _shouldBreakout = false;
+
+    while(!_shouldBreakout)
     {
         if (_numCyclesTillFree != 0)
         {
@@ -89,6 +91,13 @@ void R3000A::RunNCycles(uint32 numCycles)
                 _registers[instruction.asIType.rt] = _registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate);
                 break;
 
+            case MipsInstruction::INSTRUCTION_SLTI:
+                if ((int32)_registers[instruction.asIType.rs] < (int32)instruction.asIType.immediate)
+                    _registers[instruction.asIType.rt] = 1;
+                else
+                    _registers[instruction.asIType.rt] = 0;
+                break;
+
             case MipsInstruction::INSTRUCTION_SLTIU:
                 if (_registers[instruction.asIType.rs] < instruction.asIType.immediate)
                     _registers[instruction.asIType.rt] = 1;
@@ -160,4 +169,9 @@ void R3000A::OutputCPUState()
     }
 
     std::cout << "\n\n";
+}
+
+void R3000A::BreakoutOfLoop()
+{
+    _shouldBreakout = true;
 }
