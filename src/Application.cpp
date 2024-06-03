@@ -61,7 +61,7 @@ constexpr uint32 cHEIGHT = cPS1HEIGHT * cMULTIPLIER;
 
 std::vector<Vertex> vertices;
 glm::vec4 renderClearColor = { 0,0,0,1 };
-constexpr uint32 cMaxVertices = 2048;
+constexpr uint32 cMaxVertices = 4096;
 
 struct UniformBufferObject
 {
@@ -138,7 +138,7 @@ void Application::InitVulkan()
 void Application::MainLoop()
 {
     uint32 programSize;	uint32 biosSize;
-    uint8* program = ReadBinaryFile(programSize, "Executables/BasicGraphics.ps-exe");
+    uint8* program = ReadBinaryFile(programSize, "Executables/Gradex.ps-exe");
     uint8* bios = ReadBinaryFile(biosSize, "OpenBios/openbios.bin");
 
     if (biosSize != 512 * 1024)

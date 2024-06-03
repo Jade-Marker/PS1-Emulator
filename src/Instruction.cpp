@@ -6,10 +6,13 @@ std::map<MipsInstruction, Instruction> instructionsMap
 {
 	{MipsInstruction::INSTRUCTION_SPECIAL, Instruction((int)MipsInstruction::INSTRUCTION_SPECIAL, InstructionType::RType, PipelineParts::INSTRUCT_FETCH)},
 
+	{MipsInstruction::INSTRUCTION_BCOND, Instruction((int)MipsInstruction::INSTRUCTION_BCOND, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
+
 	{MipsInstruction::INSTRUCTION_J, Instruction((int)MipsInstruction::INSTRUCTION_J, InstructionType::JType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_JAL, Instruction((int)MipsInstruction::INSTRUCTION_JAL, InstructionType::JType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_BEQ, Instruction((int)MipsInstruction::INSTRUCTION_BEQ, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_BNE, Instruction((int)MipsInstruction::INSTRUCTION_BNE, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
+	{MipsInstruction::INSTRUCTION_BLEZ, Instruction((int)MipsInstruction::INSTRUCTION_BLEZ, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 
 	{MipsInstruction::INSTRUCTION_ADDI, Instruction((int)MipsInstruction::INSTRUCTION_ADDI, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_ADDIU, Instruction((int)MipsInstruction::INSTRUCTION_ADDIU, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
@@ -21,6 +24,7 @@ std::map<MipsInstruction, Instruction> instructionsMap
     {MipsInstruction::INSTRUCTION_LUI, Instruction((int)MipsInstruction::INSTRUCTION_LUI, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
     {MipsInstruction::INSTRUCTION_COP0, Instruction((int)MipsInstruction::INSTRUCTION_COP0, InstructionType::RType, PipelineParts::INSTRUCT_FETCH)},
 
+	{MipsInstruction::INSTRUCTION_LH, Instruction((int)MipsInstruction::INSTRUCTION_LH, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_LW, Instruction((int)MipsInstruction::INSTRUCTION_LW, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_LBU, Instruction((int)MipsInstruction::INSTRUCTION_LBU, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},
 	{MipsInstruction::INSTRUCTION_LHU, Instruction((int)MipsInstruction::INSTRUCTION_LHU, InstructionType::IType, PipelineParts::INSTRUCT_FETCH)},

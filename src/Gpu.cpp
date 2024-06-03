@@ -9,6 +9,7 @@ std::map<PrimitiveID, uint32> primitiveSizes
 	{PrimitiveID::FRAMEBUFFER_CLEAR, 3},
 
 	{PrimitiveID::MONOCHROME_TRIANGLE, 4},
+	{PrimitiveID::GOURAUD_TRIANGLE, 6},
 
 	{PrimitiveID::DRAWMODE_SETTINGS, 1},
 	{PrimitiveID::TEXTURE_WINDOW_SETTINGS, 1},
@@ -56,6 +57,14 @@ void Gpu::ProcessPrimitive()
 				_vertices->push_back({ {(_primitiveData[3] & 0x0000FFFF), ((_primitiveData[3] & 0xFFFF0000) >> 16)}, {r, g, b} });
 			}
 			break;
+
+		case PrimitiveID::GOURAUD_TRIANGLE:
+		{
+			_vertices->push_back({ {(int32)(_primitiveData[1] & 0x0000FFFF), (int32)((_primitiveData[1] & 0xFFFF0000) >> 16)}, {(_primitiveData[0] >> 0) & 0xFF, (_primitiveData[0] >> 8) & 0xFF, (_primitiveData[0] >> 16) & 0xFF} });
+			_vertices->push_back({ {(int32)(_primitiveData[3] & 0x0000FFFF), (int32)((_primitiveData[3] & 0xFFFF0000) >> 16)}, {(_primitiveData[2] >> 0) & 0xFF, (_primitiveData[2] >> 8) & 0xFF, (_primitiveData[2] >> 16) & 0xFF} });
+			_vertices->push_back({ {(int32)(_primitiveData[5] & 0x0000FFFF), (int32)((_primitiveData[5] & 0xFFFF0000) >> 16)}, {(_primitiveData[4] >> 0) & 0xFF, (_primitiveData[4] >> 8) & 0xFF, (_primitiveData[4] >> 16) & 0xFF} });
+		}
+		break;
 
 		case PrimitiveID::DRAWMODE_SETTINGS:
 			break;

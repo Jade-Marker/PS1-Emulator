@@ -39,12 +39,55 @@ void R3000A::Run()
                     _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rt] << instruction.asRtype.shamt;
                     break;
 
+                case SpecialInstruction::INSTRUCTION_SRL:
+                    _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rt] >> instruction.asRtype.shamt;
+                    break;
+
+                case SpecialInstruction::INSTRUCTION_SRA:
+                    _registers[instruction.asRtype.rd] = (int32)_registers[instruction.asRtype.rt] >> instruction.asRtype.shamt;
+                    break;
+
                 case SpecialInstruction::INSTRUCTION_JR:
                     _programCounter = _registers[instruction.asRtype.rs];
                     break;
 
+                case SpecialInstruction::INSTRUCTION_MFHI:
+                    _registers[instruction.asRtype.rd] = _mulHigh;
+                    break;
+
+                case SpecialInstruction::INSTRUCTION_MFLO:
+                    _registers[instruction.asRtype.rd] = _mulLow;
+                    break;
+
+                case SpecialInstruction::INSTRUCTION_MULT:
+                    {
+                        int64 temp = (int64)_registers[instruction.asRtype.rs] * (int64)_registers[instruction.asRtype.rt];
+                        _mulHigh = temp >> 32;
+                        _mulLow = temp;
+                    }
+                    break;
+
+                case SpecialInstruction::INSTRUCTION_MULTU:
+                {
+                    uint64 temp = (uint64)_registers[instruction.asRtype.rs] * (uint64)_registers[instruction.asRtype.rt];
+                    _mulHigh = temp >> 32;
+                    _mulLow = temp;
+                }
+                break;
+
+                case SpecialInstruction::INSTRUCTION_DIV:
+                {
+                    _mulLow = (int32)_registers[instruction.asRtype.rs] / (int32)_registers[instruction.asRtype.rt];
+                    _mulHigh = (int32)_registers[instruction.asRtype.rs] % (int32)_registers[instruction.asRtype.rt];
+                }
+                    break;
+
                 case SpecialInstruction::INSTRUCTION_ADDU:
                     _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] + _registers[instruction.asRtype.rt];
+                    break;
+
+                case SpecialInstruction::INSTRUCTION_SUBU:
+                    _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] - _registers[instruction.asRtype.rt];
                     break;
 
                 case SpecialInstruction::INSTRUCTION_OR:
@@ -55,18 +98,29 @@ void R3000A::Run()
                     _registers[instruction.asRtype.rd] = _registers[instruction.asRtype.rs] & _registers[instruction.asRtype.rt];
                     break;
 
+                case SpecialInstruction::INSTRUCTION_SLT:
+                    if ((int32)_registers[instruction.asRtype.rs] < (int32)_registers[instruction.asRtype.rt])
+                        _registers[instruction.asRtype.rd] = 1;
+                    else
+                        _registers[instruction.asRtype.rd] = 0;
+                    break;
+
                 case SpecialInstruction::INSTRUCTION_SLTU:
                     if (_registers[instruction.asRtype.rs] < _registers[instruction.asRtype.rt])
                         _registers[instruction.asRtype.rd] = 1;
                     else
                         _registers[instruction.asRtype.rd] = 0;
-
                     break;
 
                 default:
                     throw std::runtime_error("Instruction not implemented");
                     break;
                 }
+                break;
+
+            case MipsInstruction::INSTRUCTION_BCOND:
+                if (_registers[instruction.asIType.rs] >= 0)
+                    _programCounter = _programCounter + (((int32)(int16)instruction.asIType.immediate) << 2);
                 break;
 
             case MipsInstruction::INSTRUCTION_J:
@@ -82,8 +136,14 @@ void R3000A::Run()
                 if (_registers[instruction.asIType.rs] == _registers[instruction.asIType.rt])
                     _programCounter = _programCounter + (((int32)(int16)instruction.asIType.immediate) << 2);
                 break;
+
             case MipsInstruction::INSTRUCTION_BNE:
                 if (_registers[instruction.asIType.rs] != _registers[instruction.asIType.rt])
+                    _programCounter = _programCounter + (((int32)(int16)instruction.asIType.immediate) << 2);
+                break;
+
+            case MipsInstruction::INSTRUCTION_BLEZ:
+                if (_registers[instruction.asIType.rs] <= 0)
                     _programCounter = _programCounter + (((int32)(int16)instruction.asIType.immediate) << 2);
                 break;
 
@@ -118,6 +178,10 @@ void R3000A::Run()
                 _registers[instruction.asIType.rt] = (instruction.asIType.immediate << 16) & 0xFFFF0000;
                 break;
             
+            case MipsInstruction::INSTRUCTION_LH:
+                _registers[instruction.asIType.rt] = (int16)(_pMemory->ReadHalfWord(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate)));
+                break;
+
             case MipsInstruction::INSTRUCTION_LW:
                 _registers[instruction.asIType.rt] = _pMemory->ReadWord(_registers[instruction.asIType.rs] + ((int16)instruction.asIType.immediate));
                 break;
