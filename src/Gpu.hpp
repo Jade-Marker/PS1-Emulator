@@ -1,12 +1,15 @@
 #pragma once
 #include "Types.hpp"
 #include "Memory.hpp"
+#include "Vertex.hpp"
 
 enum class PrimitiveID : uint8
 {
 	FRAMEBUFFER_CLEAR = 0x02,
 
 	MONOCHROME_TRIANGLE = 0x20,
+
+	GOURAUD_TRIANGLE = 0x30,
 
 	DRAWMODE_SETTINGS = 0xe1,
 	TEXTURE_WINDOW_SETTINGS,
@@ -70,12 +73,14 @@ private:
 	bool _processingPrimitive;
 	std::vector<uint32> _primitiveData;
 	uint32 _currentPrimitiveSize;
+	std::vector<Vertex>* _vertices;
+	glm::vec4* _clearColor;
 
 	uint32 _gpuData;
 	GpuControlRegister _gpuControl;
 
 public:
-	Gpu();
+	Gpu(std::vector<Vertex>* vertices, glm::vec4* clearColor);
 
 	void ProcessPrimitive();
 

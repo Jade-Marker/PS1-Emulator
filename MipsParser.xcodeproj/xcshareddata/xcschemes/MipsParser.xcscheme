@@ -51,6 +51,18 @@
             ReferencedContainer = "container:MipsParser.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "VK_LAYER_PATH"
+            value = "/Users/jade.marker/VulkanSDK/1.3.250.1/macOS/share/vulkan/explicit_layer.d"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "VK_ICD_FILENAMES"
+            value = "/Users/jade.marker/VulkanSDK/1.3.250.1/macOS/share/vulkan/icd.d/MoltenVK_icd.json"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

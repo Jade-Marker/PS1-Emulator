@@ -9,6 +9,7 @@ class R3000A
 private:
     Memory* _pMemory;
     uint32 _numCyclesTillFree;
+    bool _shouldBreakout;
 
     uint32 _programCounter;
     union
@@ -76,8 +77,10 @@ private:
 public:
     R3000A(Memory* pMemory, uint32 programCounter, const std::array<uint32, 32>& initRegisterValues);
         
-    void RunNCycles(uint32 numCycles);
+    void Run();
 
     void OutputCPUState();
+
+    void BreakoutOfLoop();
 };
 

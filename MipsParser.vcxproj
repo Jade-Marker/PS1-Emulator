@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\IRQController.cpp" />
     <ClCompile Include="src\DMAController.cpp" />
     <ClCompile Include="src\Gpu.cpp" />
@@ -26,8 +27,23 @@
     <ClCompile Include="src\Memory.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\R3000A.cpp" />
+    <ClCompile Include="src\Vertex.cpp" />
+    <ClCompile Include="src\VulkanTypes\Buffer.cpp" />
+    <ClCompile Include="src\VulkanTypes\DebugMessenger.cpp" />
+    <ClCompile Include="src\VulkanTypes\Device.cpp" />
+    <ClCompile Include="src\VulkanTypes\Fence.cpp" />
+    <ClCompile Include="src\VulkanTypes\IndexBuffer.cpp" />
+    <ClCompile Include="src\VulkanTypes\Instance.cpp" />
+    <ClCompile Include="src\VulkanTypes\PhysicalDevice.cpp" />
+    <ClCompile Include="src\VulkanTypes\Queue.cpp" />
+    <ClCompile Include="src\VulkanTypes\QueueFamilyIndices.cpp" />
+    <ClCompile Include="src\VulkanTypes\Semaphore.cpp" />
+    <ClCompile Include="src\VulkanTypes\Surface.cpp" />
+    <ClCompile Include="src\VulkanTypes\SwapChain.cpp" />
+    <ClCompile Include="src\VulkanTypes\SwapChainSupportDetails.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Application.hpp" />
     <ClInclude Include="src\IRQController.hpp" />
     <ClInclude Include="src\DMAController.hpp" />
     <ClInclude Include="src\Gpu.hpp" />
@@ -36,6 +52,23 @@
     <ClInclude Include="src\Memory.hpp" />
     <ClInclude Include="src\R3000A.hpp" />
     <ClInclude Include="src\Types.hpp" />
+    <ClInclude Include="src\Vertex.hpp" />
+    <ClInclude Include="src\VulkanTypes\Buffer.hpp" />
+    <ClInclude Include="src\VulkanTypes\DebugMessenger.hpp" />
+    <ClInclude Include="src\VulkanTypes\Device.hpp" />
+    <ClInclude Include="src\VulkanTypes\DeviceExtensions.hpp" />
+    <ClInclude Include="src\VulkanTypes\Fence.hpp" />
+    <ClInclude Include="src\VulkanTypes\IndexBuffer.hpp" />
+    <ClInclude Include="src\VulkanTypes\Instance.hpp" />
+    <ClInclude Include="src\VulkanTypes\PhysicalDevice.hpp" />
+    <ClInclude Include="src\VulkanTypes\PlatformDebug.hpp" />
+    <ClInclude Include="src\VulkanTypes\Queue.hpp" />
+    <ClInclude Include="src\VulkanTypes\QueueFamilyIndices.hpp" />
+    <ClInclude Include="src\VulkanTypes\Semaphore.hpp" />
+    <ClInclude Include="src\VulkanTypes\Surface.hpp" />
+    <ClInclude Include="src\VulkanTypes\SwapChain.hpp" />
+    <ClInclude Include="src\VulkanTypes\SwapChainSupportDetails.hpp" />
+    <ClInclude Include="src\VulkanTypes\ValidationLayers.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -95,10 +128,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)\lib\VulkanSDK\1.3.250.1\Include;$(ProjectDir)\lib\glm;$(ProjectDir)\lib\glfw-3.3.8.bin.WIN64\include;$(ProjectDir)\src;$(ProjectDir)\src\VulkanTypes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\lib\VulkanSDK\1.3.250.1\Lib;$(ProjectDir)lib\glfw-3.3.8.bin.WIN64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies);$(CoreLibraryDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -109,12 +146,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)\lib\VulkanSDK\1.3.250.1\Include;$(ProjectDir)\lib\glm;$(ProjectDir)\lib\glfw-3.3.8.bin.WIN64\include;$(ProjectDir)\src;$(ProjectDir)\src\VulkanTypes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\lib\VulkanSDK\1.3.250.1\Lib;$(ProjectDir)lib\glfw-3.3.8.bin.WIN64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies);$(CoreLibraryDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,10 +164,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)\lib\VulkanSDK\1.3.250.1\Include;$(ProjectDir)\lib\glm;$(ProjectDir)\lib\glfw-3.3.8.bin.WIN64\include;$(ProjectDir)\src;$(ProjectDir)\src\VulkanTypes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\lib\VulkanSDK\1.3.250.1\Lib;$(ProjectDir)lib\glfw-3.3.8.bin.WIN64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies);$(CoreLibraryDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,12 +182,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)\lib\VulkanSDK\1.3.250.1\Include;$(ProjectDir)\lib\glm;$(ProjectDir)\lib\glfw-3.3.8.bin.WIN64\include;$(ProjectDir)\src;$(ProjectDir)\src\VulkanTypes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\lib\VulkanSDK\1.3.250.1\Lib;$(ProjectDir)lib\glfw-3.3.8.bin.WIN64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;glfw3.lib;%(AdditionalDependencies);$(CoreLibraryDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
